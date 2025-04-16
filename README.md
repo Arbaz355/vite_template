@@ -1,149 +1,45 @@
-# React Enterprise Application
+# Enterprise React Template Ecosystem
 
-A modern, secure, and scalable React application with enterprise-grade features.
+A comprehensive collection of enterprise-grade React application templates and guides for modern web application development.
 
-## Features
+## Available Templates
 
-- 🔐 **Secure Authentication**: JWT token management with refresh capabilities
-- 🔄 **Efficient Data Fetching**: SWR for caching, revalidation, and stale-while-revalidate strategy
-- 🛡️ **Protected Routes**: Authentication and role-based access control
-- 📱 **Responsive Images**: Optimized loading with lazy loading, WebP support, and blur-up effect
-- 🔍 **SEO Optimization**: Metadata management with OpenGraph and Twitter card support
-- 📦 **Code Splitting**: On-demand loading with TypeScript-safe lazy imports
-- 🔒 **Secure Storage**: Unified API for localStorage, sessionStorage, and cookies with encryption
-- 🚀 **CI/CD Pipeline**: Comprehensive GitLab CI/CD workflow
+- [**Vite React Enterprise Template**](./docs/vite/VITE-OVERVIEW.md) - A modern, scalable React application template built with Vite.
+- [**Next.js Enterprise Template with SSG**](./docs/nextjs/NEXTJS-OVERVIEW.md) - An advanced Next.js template with Static Site Generation capabilities.
+
+## Documentation Structure
+
+### Guides
+- [**Vite Template Creation Guide**](./PROJECT-CREATION-GUIDE.md) - Step-by-step instructions for creating the Vite React Enterprise Template.
+- [**Next.js SSG Template Creation Guide**](./NEXTJS-SSG-CREATION-GUIDE.md) - Step-by-step instructions for creating the Next.js Enterprise Template with SSG.
+
+### Improvement Plan
+- [**Template Improvement Checklist**](./TODO-IMPROVEMENTS.md) - Comprehensive list of planned improvements for the templates.
 
 ## Getting Started
 
-### Prerequisites
+1. Review the template overviews to decide which template best fits your needs
+2. Follow the corresponding creation guide to set up your project
+3. Refer to the improvement checklist for ways to enhance the template for your specific requirements
 
-- Node.js 18+
-- npm or yarn
+## Key Features
 
-### Installation
+- Type-safe development with TypeScript
+- Scalable architecture with feature-based organization
+- Enterprise-grade authentication and authorization
+- Comprehensive state management solutions
+- Performance optimization techniques
+- Testing strategies for robust applications
+- Documentation standards and best practices
 
-```bash
-# Clone the repository
-git clone <repository-url>
+## Usage
 
-# Navigate to the project directory
-cd react-enterprise-app
+Each template includes detailed usage instructions in its respective overview document. Follow those guides for specific implementation details.
 
-# Install dependencies
-npm install
-# or
-yarn install
-```
+## Contributing
 
-### Development
-
-```bash
-# Start development server
-npm run dev
-# or
-yarn dev
-```
-
-### Building for Production
-
-```bash
-# Build the application
-npm run build
-# or
-yarn build
-
-# Preview the production build
-npm run preview
-# or
-yarn preview
-```
-
-### Testing
-
-```bash
-# Run unit tests
-npm run test:unit
-# or
-yarn test:unit
-
-# Run integration tests
-npm run test:integration
-# or
-yarn test:integration
-
-# Run all tests with coverage
-npm run test
-# or
-yarn test
-```
-
-## Using as a Template
-
-This project is designed to be used as a starting template for new React applications. Here are several ways to use it:
-
-### Quick Start with Degit
-
-For a quick start without git history:
-
-```bash
-# Install degit
-npm install -g degit
-
-# Create new project from this template
-degit yourusername/react-enterprise-app my-new-project
-
-# Install dependencies
-cd my-new-project
-npm install
-```
-
-### GitHub Template
-
-You can use GitHub's template feature:
-
-1. Click the "Use this template" button on the GitHub repository
-2. Name your new repository
-3. Clone your new repository and start developing
-
-### Other Template Options
-
-For more advanced template usage, including:
-- Creating a CRA template
-- Setting up a Vite template
-- Building a custom CLI tool
-- Customization guidelines
-
-See our detailed [Template Usage Guide](docs/template-usage.md).
-
-## Project Structure
-
-```
-src/
-├── core/                  # Core utilities and components
-│   ├── api/               # API client and data fetching hooks
-│   ├── auth/              # Authentication utilities
-│   ├── components/        # Shared UI components
-│   ├── router/            # Routing and guards
-│   ├── storage/           # Storage utilities
-│   └── utils/             # Helper functions
-├── features/              # Feature modules
-│   ├── auth/              # Authentication feature
-│   ├── dashboard/         # Dashboard feature
-│   └── ...
-└── types/                 # Global TypeScript types
-```
-
-See the [Architecture Documentation](docs/architecture.md) for more details.
-
-## Documentation
-
-- [Architecture Documentation](docs/architecture.md) - Overview of project architecture and design principles
-- [API Documentation](docs/api.md) - Details of the API client and data fetching hooks
-- [Component Documentation](docs/components.md) - Information on key UI components
-- [Template Usage Guide](docs/template-usage.md) - How to use this project as a template
-- [Migration Guide](docs/migration-guide.md) - Guidelines for upgrading the project in the future
-- [Deployment Strategies](docs/deployment-strategies.md) - Detailed guide for blue-green and canary deployment strategies
+We welcome contributions to improve these templates. Please refer to the improvement checklist for current priorities.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - See LICENSE for details
