@@ -5,9 +5,21 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:local": "dotenv -e .env.local vite",
+    "dev:uat": "dotenv -e .env.uat vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build:uat": "dotenv -e .env.uat vite build",
+    "build:prod": "dotenv -e .env.production vite build",
+    "preview": "vite preview",
+    "preview:uat": "dotenv -e .env.uat vite preview",
+    "preview:prod": "dotenv -e .env.production vite preview",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,json,css,md}'",
+    "format:check": "prettier --check 'src/**/*.{js,jsx,ts,tsx,json,css,md}'",
+    "test": "echo \"No tests defined yet\" && exit 0",
+    "sonar": "sonar-scanner",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.4",
@@ -27,6 +39,7 @@
     "tailwindcss": "^4.1.4",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.3.0"
+    "vite": "^6.3.0",
+    "husky": "^8.0.0"
   }
 }

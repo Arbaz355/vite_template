@@ -1,0 +1,12 @@
+build
+coverage
+dist
+node_modules
+.git
+.husky
+.vscode
+public
+*.html
+pnpm-lock.yaml
+package-lock.json
+yarn.lock 

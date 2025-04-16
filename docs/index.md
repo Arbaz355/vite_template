@@ -10,6 +10,7 @@ This directory contains comprehensive documentation for the architecture of the 
 - [Shared Module](./shared.md) - Documentation for shared components and utilities
 - [Lib Module](./lib.md) - Guide to third-party library integrations
 - [Store Module](./store.md) - Documentation for state management
+- [Environment Configuration](./environments.md) - Guide to environment configuration
 
 ## Getting Started
 
@@ -20,7 +21,8 @@ To understand the application architecture, we recommend reading the documentati
 3. Explore the [Features Module](./features.md) to learn about domain-driven design approach
 4. Review the [Shared Module](./shared.md) to understand component organization
 5. Check the [Store Module](./store.md) to understand state management
-6. Finally, read about the [Lib Module](./lib.md) to understand third-party integrations
+6. Learn about the [Environment Configuration](./environments.md) to understand how the app is configured
+7. Finally, read about the [Lib Module](./lib.md) to understand third-party integrations
 
 ## Development Guidelines
 
@@ -30,6 +32,16 @@ Refer to the specific module documentation for detailed guidelines on how to con
 - **Encapsulation**: Implementation details are hidden behind clear interfaces
 - **Composition**: Complex features are built by composing smaller, focused components
 - **Reusability**: Common functionality is extracted into reusable utilities and components
+
+## Code Quality Tools
+
+The project includes several tools to ensure code quality:
+
+- **ESLint**: Static code analysis for identifying problematic patterns
+- **Prettier**: Code formatter to ensure consistent style
+- **TypeScript**: Static type checking
+- **Husky**: Git hooks for pre-commit and pre-push validation
+- **SonarQube**: Code quality and security analysis
 
 ## Additional Resources
 
