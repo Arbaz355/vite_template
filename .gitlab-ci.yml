@@ -24,6 +24,7 @@ stages:
   - build
   - security
   - deploy
+  - post-deploy
 
 # Variables
 variables:
@@ -33,6 +34,10 @@ variables:
   NPM_CI_FLAGS: "--prefer-offline --no-audit"
   # Output directory
   BUILD_DIR: "dist"
+  # Deployment strategy
+  DEPLOYMENT_STRATEGY: "standard" # Options: standard, blue-green, canary
+  # For canary deployment
+  CANARY_WEIGHT: "10" # Percentage of traffic to route to canary
 
 ##################################################
 # Setup Stage
@@ -52,6 +57,16 @@ install:
       - node_modules/
       - .npm/
     policy: pull-push
+
+setup:scripts:
+  stage: setup
+  script:
+    - chmod +x scripts/*.sh
+    - echo "Made deployment scripts executable"
+  artifacts:
+    paths:
+      - scripts/
+    expire_in: 1 day
 
 ##################################################
 # Lint Stage
@@ -160,8 +175,8 @@ security:scan:
 # Deploy Stage
 ##################################################
 
-# Staging deployment (on main branch)
-deploy:staging:
+# Standard Deployment (Staging)
+deploy:staging:standard:
   stage: deploy
   image: node:18-alpine
   environment:
@@ -176,9 +191,210 @@ deploy:staging:
   needs:
     - build
   when: manual
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "standard"
+      when: manual
 
-# Production deployment (on tags)
-deploy:production:
+# Blue-Green Deployment (Staging)
+deploy:staging:blue-green:prepare:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: staging-blue-green
+    url: https://staging-inactive.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Determine which environment is currently active (blue or green)
+      ACTIVE_ENV=$(firebase functions:config:get deployment.active --token $FIREBASE_TOKEN)
+      if [ "$ACTIVE_ENV" == "blue" ]; then
+        INACTIVE_ENV="green"
+      else
+        INACTIVE_ENV="blue"
+      fi
+      echo "Active environment: $ACTIVE_ENV, deploying to: $INACTIVE_ENV"
+      
+      # Deploy to inactive environment
+      firebase use staging-$INACTIVE_ENV
+      firebase deploy --only hosting --token $FIREBASE_TOKEN
+      
+      # Store environment info for later stages
+      echo "INACTIVE_ENV=$INACTIVE_ENV" > deployment.env
+      
+      # If Kubernetes is available, update K8s deployment
+      if [ -n "$KUBECONFIG" ]; then
+        # Apply Kubernetes configurations
+        kubectl apply -f kubernetes/blue-green/service.yaml
+        kubectl apply -f kubernetes/blue-green/$INACTIVE_ENV-deployment.yaml
+        
+        # Update the deployment image
+        kubectl set image deployment/react-app-$INACTIVE_ENV -n staging react-app=react-app:${CI_COMMIT_SHA}
+        
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/react-app-$INACTIVE_ENV -n staging
+      fi
+  only:
+    - main
+  needs:
+    - build
+  artifacts:
+    reports:
+      dotenv: deployment.env
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "blue-green"
+      when: manual
+
+deploy:staging:blue-green:switch:
+  stage: post-deploy
+  image: node:18-alpine
+  environment:
+    name: staging
+    url: https://staging.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Switch traffic to the newly deployed environment
+      firebase use staging
+      firebase functions:config:set deployment.active=$INACTIVE_ENV --token $FIREBASE_TOKEN
+      
+      # Update load balancer/router to point to the new environment
+      echo "Switching traffic to $INACTIVE_ENV environment"
+      
+      # Example with Google Cloud Load Balancer
+      if [ -n "$GCLOUD_SERVICE_ACCOUNT" ]; then
+        gcloud auth activate-service-account --key-file=$GCLOUD_SERVICE_ACCOUNT
+        gcloud compute forwarding-rules update staging-lb \
+          --backend-service=staging-$INACTIVE_ENV-backend \
+          --global
+      fi
+      
+      # If Kubernetes is available, use our script to switch
+      if [ -n "$KUBECONFIG" ]; then
+        # Make script executable
+        chmod +x scripts/switch-blue-green.sh
+        
+        # Execute the switch script
+        ./scripts/switch-blue-green.sh staging $INACTIVE_ENV
+      fi
+  only:
+    - main
+  needs:
+    - deploy:staging:blue-green:prepare
+  when: manual
+
+# Canary Deployment (Staging)
+deploy:staging:canary:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: staging-canary
+    url: https://staging-canary.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Deploy to canary environment
+      firebase use staging-canary
+      firebase deploy --only hosting --token $FIREBASE_TOKEN
+      
+      # Configure traffic splitting (implementation depends on your infrastructure)
+      echo "Configuring canary deployment with ${CANARY_WEIGHT}% traffic"
+      
+      # Example with Kubernetes
+      if [ -n "$KUBECONFIG" ]; then
+        # Apply Kubernetes configurations
+        kubectl apply -f kubernetes/canary/canary-deployment.yaml
+        kubectl apply -f kubernetes/canary/stable-deployment.yaml
+        kubectl apply -f kubernetes/canary/virtual-service.yaml
+        
+        # Update the deployment image
+        kubectl set image deployment/app-canary -n staging react-app=react-app:${CI_COMMIT_SHA}
+        
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/app-canary -n staging
+        
+        # Make script executable
+        chmod +x scripts/update-canary-weight.sh
+        
+        # Update the canary weight
+        ./scripts/update-canary-weight.sh staging $CANARY_WEIGHT
+      fi
+      
+      # Add monitoring setup for canary metrics
+      echo "Setting up monitoring for canary deployment"
+      # Configure Prometheus annotations or custom metrics if available
+      if [ -n "$KUBECONFIG" ]; then
+        kubectl annotate deployment app-canary -n staging prometheus.io/scrape=true
+        kubectl annotate deployment app-canary -n staging prometheus.io/port=80
+      fi
+  only:
+    - main
+  needs:
+    - build
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "canary"
+      when: manual
+
+deploy:staging:canary:promote:
+  stage: post-deploy
+  image: node:18-alpine
+  environment:
+    name: staging
+    url: https://staging.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Promote canary to stable
+      echo "Promoting canary deployment to 100% of traffic"
+      
+      # Clone canary content to stable
+      firebase use staging-stable
+      firebase deploy --only hosting --token $FIREBASE_TOKEN --source=staging-canary
+      
+      # If Kubernetes is available, use our script to promote
+      if [ -n "$KUBECONFIG" ]; then
+        # Make script executable
+        chmod +x scripts/promote-canary.sh
+        
+        # Execute the promotion script
+        ./scripts/promote-canary.sh staging
+      fi
+      
+      # Reset traffic splitting to 100% stable
+      # Example with Kubernetes
+      if [ -n "$KUBECONFIG" ]; then
+        # Update Istio VirtualService or similar
+        cat > vs.yaml <<EOF
+        apiVersion: networking.istio.io/v1alpha3
+        kind: VirtualService
+        metadata:
+          name: staging-frontend
+        spec:
+          hosts:
+          - staging.example.com
+          http:
+          - route:
+            - destination:
+                host: staging-stable
+                port:
+                  number: 80
+              weight: 100
+        EOF
+        
+        kubectl apply -f vs.yaml
+      fi
+  only:
+    - main
+  needs:
+    - deploy:staging:canary
+  when: manual
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "canary"
+      when: manual
+    - when: never
+
+# Production deployments follow similar patterns but for production environments
+# Production Deployment (Standard)
+deploy:production:standard:
   stage: deploy
   image: node:18-alpine
   environment:
@@ -192,10 +408,203 @@ deploy:production:
     - tags
   needs:
     - build
-  when: manual
-  # Add production-specific rules
   rules:
-    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+    - if: $DEPLOYMENT_STRATEGY == "standard" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+
+# Production Blue-Green Deployment
+deploy:production:blue-green:prepare:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: production-blue-green
+    url: https://inactive.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Determine which environment is currently active (blue or green)
+      ACTIVE_ENV=$(firebase functions:config:get deployment.active --token $FIREBASE_TOKEN)
+      if [ "$ACTIVE_ENV" == "blue" ]; then
+        INACTIVE_ENV="green"
+      else
+        INACTIVE_ENV="blue"
+      fi
+      echo "Active environment: $ACTIVE_ENV, deploying to: $INACTIVE_ENV"
+      
+      # Deploy to inactive environment
+      firebase use production-$INACTIVE_ENV
+      firebase deploy --only hosting --token $FIREBASE_TOKEN
+      
+      # Store environment info for later stages
+      echo "INACTIVE_ENV=$INACTIVE_ENV" > deployment.env
+      
+      # If Kubernetes is available, update K8s deployment
+      if [ -n "$KUBECONFIG" ]; then
+        # Apply Kubernetes configurations
+        kubectl apply -f kubernetes/blue-green/service.yaml -n production
+        kubectl apply -f kubernetes/blue-green/$INACTIVE_ENV-deployment.yaml -n production
+        
+        # Update the deployment image
+        kubectl set image deployment/react-app-$INACTIVE_ENV -n production react-app=react-app:${CI_COMMIT_SHA}
+        
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/react-app-$INACTIVE_ENV -n production
+      fi
+  only:
+    - tags
+  needs:
+    - build
+  artifacts:
+    reports:
+      dotenv: deployment.env
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "blue-green" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+
+deploy:production:blue-green:switch:
+  stage: post-deploy
+  image: node:18-alpine
+  environment:
+    name: production
+    url: https://example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Switch traffic to the newly deployed environment
+      firebase use production
+      firebase functions:config:set deployment.active=$INACTIVE_ENV --token $FIREBASE_TOKEN
+      
+      # Update load balancer/router to point to the new environment
+      echo "Switching traffic to $INACTIVE_ENV environment"
+      
+      # If Kubernetes is available, use our script to switch
+      if [ -n "$KUBECONFIG" ]; then
+        # Make script executable
+        chmod +x scripts/switch-blue-green.sh
+        
+        # Execute the switch script
+        ./scripts/switch-blue-green.sh production $INACTIVE_ENV
+      fi
+  only:
+    - tags
+  needs:
+    - deploy:production:blue-green:prepare
+  when: manual
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "blue-green" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+
+# Production Canary Deployment
+deploy:production:canary:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: production-canary
+    url: https://canary.example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Deploy to canary environment
+      firebase use production-canary
+      firebase deploy --only hosting --token $FIREBASE_TOKEN
+      
+      # Configure traffic splitting
+      echo "Configuring canary deployment with ${CANARY_WEIGHT}% traffic"
+      
+      # Example with Kubernetes
+      if [ -n "$KUBECONFIG" ]; then
+        # Apply Kubernetes configurations
+        kubectl apply -f kubernetes/canary/canary-deployment.yaml -n production
+        kubectl apply -f kubernetes/canary/stable-deployment.yaml -n production
+        kubectl apply -f kubernetes/canary/virtual-service.yaml -n production
+        
+        # Update the deployment image
+        kubectl set image deployment/app-canary -n production react-app=react-app:${CI_COMMIT_SHA}
+        
+        # Wait for deployment to be ready
+        kubectl rollout status deployment/app-canary -n production
+        
+        # Make script executable
+        chmod +x scripts/update-canary-weight.sh
+        
+        # Update the canary weight
+        ./scripts/update-canary-weight.sh production $CANARY_WEIGHT
+      fi
+      
+      # Add monitoring setup for canary metrics
+      echo "Setting up monitoring for canary deployment"
+      # Configure Prometheus annotations or custom metrics if available
+      if [ -n "$KUBECONFIG" ]; then
+        kubectl annotate deployment app-canary -n production prometheus.io/scrape=true
+        kubectl annotate deployment app-canary -n production prometheus.io/port=80
+      fi
+  only:
+    - tags
+  needs:
+    - build
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "canary" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+
+deploy:production:canary:promote:
+  stage: post-deploy
+  image: node:18-alpine
+  environment:
+    name: production
+    url: https://example.com
+  script:
+    - npm install -g firebase-tools
+    - |
+      # Promote canary to stable
+      echo "Promoting canary deployment to 100% of traffic"
+      
+      # Clone canary content to stable
+      firebase use production-stable
+      firebase deploy --only hosting --token $FIREBASE_TOKEN --source=production-canary
+      
+      # If Kubernetes is available, use our script to promote
+      if [ -n "$KUBECONFIG" ]; then
+        # Make script executable
+        chmod +x scripts/promote-canary.sh
+        
+        # Execute the promotion script
+        ./scripts/promote-canary.sh production
+      fi
+      
+      # Reset traffic splitting to 100% stable
+      # Example with Kubernetes
+      if [ -n "$KUBECONFIG" ]; then
+        # Update Istio VirtualService or similar
+        cat > vs.yaml <<EOF
+        apiVersion: networking.istio.io/v1alpha3
+        kind: VirtualService
+        metadata:
+          name: production-frontend
+        spec:
+          hosts:
+          - example.com
+          http:
+          - route:
+            - destination:
+                host: production-stable
+                port:
+                  number: 80
+              weight: 100
+        EOF
+        
+        kubectl apply -f vs.yaml
+      fi
+  only:
+    - tags
+  needs:
+    - deploy:production:canary
+  when: manual
+  rules:
+    - if: $DEPLOYMENT_STRATEGY == "canary" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
       when: manual
     - when: never
 
@@ -213,4 +622,5 @@ workflow:
     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
       when: never
     # Create pipeline for all branches, tags, and MRs
+    - when: always
  

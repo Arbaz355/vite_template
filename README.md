@@ -142,6 +142,7 @@ See the [Architecture Documentation](docs/architecture.md) for more details.
 - [Component Documentation](docs/components.md) - Information on key UI components
 - [Template Usage Guide](docs/template-usage.md) - How to use this project as a template
 - [Migration Guide](docs/migration-guide.md) - Guidelines for upgrading the project in the future
+- [Deployment Strategies](docs/deployment-strategies.md) - Detailed guide for blue-green and canary deployment strategies
 
 ## License
 

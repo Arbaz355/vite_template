@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: app-routes
+spec:
+  hosts:
+  - app.example.com  # Replace with your actual domain
+  http:
+  - route:
+    - destination:
+        host: app-stable-service
+        port:
+          number: 80
+      weight: 90  # This will be adjusted with the CANARY_WEIGHT variable
+    - destination:
+        host: app-canary-service
+        port:
+          number: 80
+      weight: 10  # Default canary weight 
