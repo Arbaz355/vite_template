@@ -1,0 +1,36 @@
+{
+  "general": {
+    "title": "Error",
+    "unknown": "Ha ocurrido un error desconocido",
+    "notFound": "No encontrado",
+    "serverError": "Error del servidor",
+    "networkError": "Error de red",
+    "unauthorized": "No autorizado",
+    "forbidden": "Prohibido",
+    "tryAgain": "Por favor intente de nuevo"
+  },
+  "auth": {
+    "invalidCredentials": "Correo electrónico o contraseña inválidos",
+    "accountLocked": "Su cuenta ha sido bloqueada",
+    "sessionExpired": "Su sesión ha expirado, por favor inicie sesión de nuevo",
+    "passwordResetRequired": "Se requiere restablecer la contraseña",
+    "emailNotVerified": "Por favor verifique su dirección de correo electrónico"
+  },
+  "form": {
+    "validationFailed": "Por favor corrija los errores en el formulario",
+    "submissionFailed": "Envío del formulario fallido",
+    "alreadySubmitting": "El formulario ya se está enviando"
+  },
+  "api": {
+    "requestFailed": "Solicitud fallida",
+    "timeout": "La solicitud ha caducado",
+    "rateLimited": "Demasiadas solicitudes, por favor intente más tarde",
+    "maintenanceMode": "El sistema está actualmente en mantenimiento"
+  },
+  "notFound": {
+    "page": "Página no encontrada",
+    "pageMessage": "La página que busca no existe",
+    "resource": "Recurso no encontrado",
+    "backToHome": "Volver al inicio"
+  }
+}

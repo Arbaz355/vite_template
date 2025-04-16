@@ -1,0 +1,49 @@
+{
+  "app": {
+    "name": "React Enterprise",
+    "description": "Una arquitectura moderna y escalable para aplicaciones React empresariales"
+  },
+  "navigation": {
+    "home": "Inicio",
+    "about": "Acerca de",
+    "dashboard": "Panel",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
+  },
+  "buttons": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "close": "Cerrar",
+    "back": "Atrás",
+    "next": "Siguiente"
+  },
+  "form": {
+    "required": "Obligatorio",
+    "optional": "Opcional",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "username": "Nombre de usuario",
+    "firstName": "Nombre",
+    "lastName": "Apellido"
+  },
+  "validation": {
+    "required": "Este campo es obligatorio",
+    "email": "Por favor ingrese un correo electrónico válido",
+    "passwordMatch": "Las contraseñas no coinciden",
+    "minLength": "Debe tener al menos {{count}} caracteres",
+    "maxLength": "Debe tener como máximo {{count}} caracteres"
+  },
+  "dateTime": {
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "tomorrow": "Mañana",
+    "days": "Días",
+    "weeks": "Semanas",
+    "months": "Meses",
+    "years": "Años"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "general": {
+    "title": "Error",
+    "unknown": "An unknown error occurred",
+    "notFound": "Not Found",
+    "serverError": "Server Error",
+    "networkError": "Network Error",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "tryAgain": "Please try again"
+  },
+  "auth": {
+    "invalidCredentials": "Invalid email or password",
+    "accountLocked": "Your account has been locked",
+    "sessionExpired": "Your session has expired, please log in again",
+    "passwordResetRequired": "Password reset required",
+    "emailNotVerified": "Please verify your email address"
+  },
+  "form": {
+    "validationFailed": "Please correct the errors in the form",
+    "submissionFailed": "Form submission failed",
+    "alreadySubmitting": "Form is already submitting"
+  },
+  "api": {
+    "requestFailed": "Request failed",
+    "timeout": "Request timed out",
+    "rateLimited": "Too many requests, please try again later",
+    "maintenanceMode": "System is currently undergoing maintenance"
+  },
+  "notFound": {
+    "page": "Page not found",
+    "pageMessage": "The page you're looking for doesn't exist",
+    "resource": "Resource not found",
+    "backToHome": "Back to home"
+  }
+}
