@@ -11,6 +11,9 @@ This directory contains comprehensive documentation for the architecture of the 
 - [Lib Module](./lib.md) - Guide to third-party library integrations
 - [Store Module](./store.md) - Documentation for state management
 - [Environment Configuration](./environments.md) - Guide to environment configuration
+- [Forms](./forms.md) - Documentation for forms and validation
+- [Deployment](./deployment.md) - Guide to Docker and Kubernetes deployment
+- [Testing](./testing.md) - Documentation for testing strategies and practices
 
 ## Getting Started
 

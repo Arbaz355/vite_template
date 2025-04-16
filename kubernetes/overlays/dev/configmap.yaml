@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: react-app-config
+data:
+  NODE_ENV: "development"
+  VITE_ENABLE_ANALYTICS: "false"
+  VITE_ENABLE_ERROR_TRACKING: "false" 
