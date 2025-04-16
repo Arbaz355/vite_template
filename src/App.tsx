@@ -1,17 +1,14 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
-import { StoreProvider } from './store/providers';
-import { useSelector, useDispatch } from './store/hooks';
-import { setTheme } from './store/slices/ui';
+import { useUI } from './store/zustand/hooks';
 
-function AppContent() {
+function App() {
   const [count, setCount] = useState(0);
-  const theme = useSelector((state) => state.ui.theme);
-  const dispatch = useDispatch();
+  const { theme, setTheme } = useUI();
 
   const toggleTheme = () => {
-    dispatch(setTheme(theme === 'dark' ? 'light' : 'dark'));
+    setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -65,14 +62,6 @@ function AppContent() {
       </div>
       <p className="text-gray-500">Click on the Vite and React logos to learn more</p>
     </div>
-  );
-}
-
-function App() {
-  return (
-    <StoreProvider>
-      <AppContent />
-    </StoreProvider>
   );
 }
 
