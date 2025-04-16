@@ -2,12 +2,12 @@
  * State Management
  *
  * This is the main entry point for state management in the application.
- * It exports all necessary state management hooks and providers.
+ * It exports the Zustand state management hooks and store.
  */
 
-export * from './context';
-export * from './hooks';
-export * from './providers';
-export * from './slices';
+// Export types for shared usage
 export * from './types';
-export * from './utils';
+
+// Export the Zustand implementation
+export { useStore } from './zustand/store';
+export { useUser, useUI, useEntity, createSelector, createStoreSelector } from './zustand/hooks';

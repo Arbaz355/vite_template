@@ -1,5 +1,5 @@
-# Store Module
+# State Management
 
-This directory contains global state management for the application.
+This directory contains the application's state management using Zustand, a small, fast and scalable state-management solution.
 
-For detailed documentation, see [Store Module Documentation](../../docs/store.md). 
+See the [zustand directory](./zustand) for implementation details. 
