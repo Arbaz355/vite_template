@@ -7,16 +7,22 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import { api } from './client';
+import api from './client';
 import { ApiRequestOptions, ApiResponse, PaginationParams } from '../../types/api';
 import { AsyncStatus } from '../../types/store';
+
+// Interface for entities with IDs
+interface WithId {
+  id: string | number;
+  [key: string]: unknown;
+}
 
 /**
  * Custom fetch function for SWR that uses our API client
  */
 const fetcher = async <T>(url: string, options?: ApiRequestOptions): Promise<T> => {
-  const response = await api.get<ApiResponse<T>>(url, undefined, options);
-  return response.data;
+  const response = await api.get<ApiResponse<T>>(url, options);
+  return response.data.data as T;
 };
 
 /**
@@ -39,7 +45,7 @@ export function useApi<T>(
   const { initialData, onSuccess, onError, ...swrOptions } = options || {};
 
   // Use SWR for data fetching
-  const swr = useSWR<T, Error>(url, (url) => fetcher<T>(url, options), {
+  const swr = useSWR<T, Error>(url, (fetchUrl: string) => fetcher<T>(fetchUrl, options), {
     ...swrOptions,
     fallbackData: initialData,
     onSuccess,
@@ -58,7 +64,7 @@ export function useApi<T>(
 /**
  * Hook for mutation operations (create, update, delete)
  */
-export function useMutation<T, D = unknown>(
+export function useMutation<T, D extends Record<string, unknown> = Record<string, unknown>>(
   url: string,
   method: 'POST' | 'PUT' | 'PATCH' | 'DELETE' = 'POST',
   options?: ApiRequestOptions
@@ -85,8 +91,10 @@ export function useMutation<T, D = unknown>(
             response = await api.patch<T>(url, mutationData, options);
             break;
           case 'DELETE':
-            response = await api.delete<T>(url, mutationData, options);
+            response = await api.delete<T>(url, options);
             break;
+          default:
+            throw new Error(`Unsupported method: ${method}`);
         }
 
         setData(response.data);
@@ -171,7 +179,7 @@ export function usePagination<T>(
 /**
  * Hook for infinite loading/scrolling
  */
-export function useInfiniteData<T>(
+export function useInfiniteData<T extends WithId>(
   baseUrl: string,
   options?: UseApiOptions<ApiResponse<T[]>> & ApiRequestOptions
 ) {
@@ -193,10 +201,7 @@ export function useInfiniteData<T>(
         const newItems = data.data.filter(
           (newItem) =>
             !prev.some(
-              (existingItem) =>
-                (newItem as any).id &&
-                (existingItem as any).id &&
-                (existingItem as any).id === (newItem as any).id
+              (existingItem) => newItem.id && existingItem.id && existingItem.id === newItem.id
             )
         );
 
