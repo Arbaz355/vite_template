@@ -155,4 +155,195 @@ export const selectAuthError = (state: RootState) => state.auth.error;
 4. **Action Types**: Use constants or enums for action types
 5. **Middleware**: Use middleware for side effects and complex logic
 6. **DevTools**: Configure DevTools for better debugging
-7. **Performance**: Use memoization to prevent unnecessary re-renders 
+7. **Performance**: Use memoization to prevent unnecessary re-renders
+
+# State Management Architecture
+
+This application uses a robust, scalable state management architecture built around React Context and custom hooks. The architecture is designed for optimal performance, type safety, and developer experience.
+
+## Architecture Overview
+
+The state management system follows a unidirectional data flow pattern with a centralized store:
+
+```
+User Interaction → Action → Dispatcher → Reducer → State → UI
+```
+
+### Key Components
+
+1. **Store**: Central repository for application state
+2. **Reducers**: Pure functions that calculate new state based on current state and actions
+3. **Actions**: Events that describe state changes
+4. **Selectors**: Functions that extract specific pieces of state
+5. **Hooks**: Custom React hooks for accessing state and dispatching actions
+
+## Directory Structure
+
+```
+src/store/
+├── context.ts         # React context for the store
+├── hooks.ts           # Custom hooks for accessing state
+├── index.ts           # Public API exports
+├── providers.tsx      # StoreProvider component
+├── reducers.ts        # Root reducer
+├── types.ts           # TypeScript interfaces and types
+├── utils.ts           # Helper functions
+└── slices/            # State slices by domain
+    ├── user.ts        # User authentication state
+    ├── ui.ts          # UI state (theme, notifications, etc.)
+    └── entities.ts    # Domain entities (normalized)
+```
+
+## Core Concepts
+
+### State Organization
+
+State is organized into three main categories:
+
+1. **User State**: Authentication and user profile data
+2. **UI State**: Application interface state (theme, notifications, modals, etc.)
+3. **Entities State**: Normalized application data organized by entity type
+
+### State Flow
+
+1. Components use hooks to access state and dispatch actions
+2. Actions are dispatched to the central store
+3. Reducers process actions and calculate new state
+4. Components re-render with new state values
+
+## Using the State Management
+
+### Accessing State
+
+```tsx
+import { useSelector } from 'src/store/hooks';
+
+function UserProfile() {
+  // Access specific state slice
+  const user = useSelector(state => state.user);
+  
+  // Or access specific properties
+  const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+  
+  // Use with memoization
+  const userRoles = useSelector(state => state.user.roles);
+  
+  return (
+    <div>
+      {isAuthenticated ? (
+        <h1>Welcome, {user.displayName}</h1>
+      ) : (
+        <h1>Please log in</h1>
+      )}
+    </div>
+  );
+}
+```
+
+### Dispatching Actions
+
+```tsx
+import { useDispatch } from 'src/store/hooks';
+import { login, logout } from 'src/store/slices/user';
+
+function LoginButton() {
+  const dispatch = useDispatch();
+  
+  const handleLogin = () => {
+    dispatch(login({ email: 'user@example.com', password: 'password' }));
+  };
+  
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+  
+  return (
+    <button onClick={handleLogin}>Login</button>
+  );
+}
+```
+
+### Using Entity State
+
+```tsx
+import { useEntity } from 'src/store/hooks';
+import { entityAdd } from 'src/store/slices/entities';
+
+function TodoList() {
+  // Access todos from entities state
+  const { byId, allIds, loading } = useEntity<Todo>('todos');
+  const dispatch = useDispatch();
+  
+  const addTodo = (todo) => {
+    dispatch(entityAdd({ entityType: 'todos', entity: todo }));
+  };
+  
+  if (loading) return <div>Loading...</div>;
+  
+  return (
+    <ul>
+      {allIds.map(id => (
+        <li key={id}>{byId[id].title}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Using UI State
+
+```tsx
+import { useUI } from 'src/store/hooks';
+import { setTheme, addNotification } from 'src/store/slices/ui';
+
+function ThemeToggle() {
+  const { theme } = useUI();
+  const dispatch = useDispatch();
+  
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    dispatch(setTheme(newTheme));
+    
+    // Also show a notification
+    dispatch(addNotification({
+      type: 'success',
+      message: `Theme changed to ${newTheme}`,
+      autoClose: true,
+      duration: 3000
+    }));
+  };
+  
+  return (
+    <button onClick={toggleTheme}>
+      Toggle Theme (Current: {theme})
+    </button>
+  );
+}
+```
+
+## Best Practices
+
+1. **Use Selectors**: Always use selectors to access state rather than directly accessing the state object
+2. **Memoize Selectors**: For expensive computations, use `useMemoizedSelector`
+3. **Normalize Entities**: Store entities in normalized form (byId and allIds)
+4. **TypeScript**: Leverage TypeScript for type safety across the state management system
+5. **Keep UI State Separate**: Separate UI state from domain data
+6. **Use Action Creators**: Always use action creators rather than dispatching plain action objects
+
+## Advanced Features
+
+### Persistence
+
+The state is automatically persisted to localStorage and rehydrated on application reload.
+
+### Middleware
+
+The state management includes a logging middleware for development mode that logs all actions and state changes.
+
+### Error Handling
+
+Actions can include an error flag to indicate failures, and the UI state includes a notifications system for displaying errors to users.
+
+### Optimistic Updates
+
+For better UX, you can perform optimistic updates by updating the local state immediately and then syncing with the server. 

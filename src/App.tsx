@@ -1,9 +1,18 @@
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
+import { StoreProvider } from './store/providers';
+import { useSelector, useDispatch } from './store/hooks';
+import { setTheme } from './store/slices/ui';
 
-function App() {
+function AppContent() {
   const [count, setCount] = useState(0);
+  const theme = useSelector((state) => state.ui.theme);
+  const dispatch = useDispatch();
+
+  const toggleTheme = () => {
+    dispatch(setTheme(theme === 'dark' ? 'light' : 'dark'));
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-8 text-center">
@@ -32,6 +41,13 @@ function App() {
         </a>
       </div>
       <h1 className="text-4xl font-bold my-4">Vite + React</h1>
+      <p className="mb-4">Current theme: {theme}</p>
+      <button
+        onClick={toggleTheme}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors mb-4"
+      >
+        Toggle Theme
+      </button>
       <div className="p-8">
         <button
           onClick={() => setCount((count) => count + 1)}
@@ -40,17 +56,23 @@ function App() {
           count is {count}
         </button>
         <p className="mt-4">
-          Edit{" "}
+          Edit{' '}
           <code className="font-mono bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded">
             src/App.tsx
-          </code>{" "}
+          </code>{' '}
           and save to test HMR
         </p>
       </div>
-      <p className="text-gray-500">
-        Click on the Vite and React logos to learn more
-      </p>
+      <p className="text-gray-500">Click on the Vite and React logos to learn more</p>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <StoreProvider>
+      <AppContent />
+    </StoreProvider>
   );
 }
 

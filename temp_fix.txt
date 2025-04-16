@@ -1,0 +1,1 @@
+"export const loginFailure = createAction<Error>(LOGIN_FAILURE);"  
