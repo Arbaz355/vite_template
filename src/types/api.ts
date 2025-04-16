@@ -9,10 +9,10 @@
  */
 export interface ApiResponse<T> {
   data: T;
-  success: boolean;
-  message?: string;
-  timestamp: number;
-  statusCode: number;
+  status: number;
+  statusText: string;
+  headers: Record<string, string>;
+  config: any;
 }
 
 /**
@@ -29,13 +29,13 @@ export interface PaginationParams {
  * Paginated response interface
  */
 export interface PaginatedResponse<T> {
-  items: T[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasNext: boolean;
-  hasPrevious: boolean;
+  data: T[];
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 /**
@@ -66,7 +66,35 @@ export interface SearchQuery extends PaginationParams {
  */
 export interface ApiRequestOptions {
   headers?: Record<string, string>;
-  params?: Record<string, string | number | boolean | undefined>;
-  withAuth?: boolean;
   timeout?: number;
+  withCredentials?: boolean;
+  responseType?: 'json' | 'text' | 'blob' | 'arraybuffer';
+  params?: Record<string, any>;
+  signal?: AbortSignal;
+}
+
+/**
+ * Error response from the API
+ */
+export interface ApiError {
+  message: string;
+  code: string;
+  status: number;
+  errors?: Record<string, string[]>;
+}
+
+/**
+ * Authentication tokens
+ */
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+/**
+ * API file upload options
+ */
+export interface FileUploadOptions extends ApiRequestOptions {
+  onProgress?: (progressEvent: { loaded: number; total: number; progress: number }) => void;
 }

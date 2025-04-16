@@ -1,0 +1,216 @@
+##################################################
+# GitLab CI/CD Configuration
+##################################################
+# This file defines the CI/CD pipeline for the project
+# with stages for linting, testing, building, and deploying
+# the application to different environments.
+##################################################
+
+# Default image for all jobs
+image: node:18-alpine
+
+# Cache dependencies between jobs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .npm/
+
+# Pipeline stages
+stages:
+  - setup
+  - lint
+  - test
+  - build
+  - security
+  - deploy
+
+# Variables
+variables:
+  # Disable sending npm usage metrics
+  NPM_CONFIG_LOGLEVEL: "error"
+  # Optimize CI for monorepos if needed
+  NPM_CI_FLAGS: "--prefer-offline --no-audit"
+  # Output directory
+  BUILD_DIR: "dist"
+
+##################################################
+# Setup Stage
+##################################################
+
+install:
+  stage: setup
+  script:
+    - npm ci ${NPM_CI_FLAGS}
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 hour
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .npm/
+    policy: pull-push
+
+##################################################
+# Lint Stage
+##################################################
+
+lint:code:
+  stage: lint
+  script:
+    - npm run lint
+  needs:
+    - install
+  # Continue pipeline even if linting fails
+  allow_failure: true
+  artifacts:
+    paths:
+      - eslint-report.json
+    when: always
+    expire_in: 1 week
+    reports:
+      eslint: eslint-report.json
+
+lint:types:
+  stage: lint
+  script:
+    - npm run typecheck
+  needs:
+    - install
+  # Continue pipeline even if type checking fails
+  allow_failure: true
+
+##################################################
+# Test Stage
+##################################################
+
+test:unit:
+  stage: test
+  script:
+    - npm run test:unit -- --coverage
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  needs:
+    - install
+  artifacts:
+    paths:
+      - coverage/
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+
+test:integration:
+  stage: test
+  script:
+    - npm run test:integration
+  needs:
+    - install
+  # Only run integration tests on main branch and MRs
+  only:
+    - main
+    - merge_requests
+
+##################################################
+# Build Stage
+##################################################
+
+build:
+  stage: build
+  script:
+    - npm run build
+  needs:
+    - install
+  artifacts:
+    paths:
+      - ${BUILD_DIR}/
+    expire_in: 1 week
+  # Only build for main branch and tags
+  only:
+    - main
+    - tags
+
+##################################################
+# Security Stage
+##################################################
+
+security:dependencies:
+  stage: security
+  script:
+    - npm audit --production
+  needs:
+    - install
+  allow_failure: true
+  # Run dependency check on a schedule and main branch
+  only:
+    - main
+    - schedules
+
+security:scan:
+  stage: security
+  image: registry.gitlab.com/gitlab-org/security-products/analyzers/secrets:latest
+  script:
+    - /analyzer run
+  # No dependencies needed
+  needs: []
+  allow_failure: true
+
+##################################################
+# Deploy Stage
+##################################################
+
+# Staging deployment (on main branch)
+deploy:staging:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: staging
+    url: https://staging.example.com
+  script:
+    - npm install -g firebase-tools
+    - firebase use staging
+    - firebase deploy --only hosting --token $FIREBASE_TOKEN
+  only:
+    - main
+  needs:
+    - build
+  when: manual
+
+# Production deployment (on tags)
+deploy:production:
+  stage: deploy
+  image: node:18-alpine
+  environment:
+    name: production
+    url: https://example.com
+  script:
+    - npm install -g firebase-tools
+    - firebase use production
+    - firebase deploy --only hosting --token $FIREBASE_TOKEN
+  only:
+    - tags
+  needs:
+    - build
+  when: manual
+  # Add production-specific rules
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
+      when: manual
+    - when: never
+
+##################################################
+# Pipeline Configuration
+##################################################
+
+# Cancel redundant pipelines
+workflow:
+  rules:
+    # Don't create a pipeline if it's a draft MR
+    - if: $CI_MERGE_REQUEST_TITLE =~ /^Draft:/
+      when: never
+    # Don't create a redundant pipeline if there is an open MR
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # Create pipeline for all branches, tags, and MRs
+ 
