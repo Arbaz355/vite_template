@@ -21,23 +21,34 @@ import React, { lazy, ComponentType } from 'react';
  * @param exportName - (Optional) Name of the exported component if not using default export
  * @returns Lazy-loaded component with proper types
  */
-export function lazyImport<
-  T extends ComponentType<any>,
-  I extends { [K2 in K]: T },
-  K extends keyof I
->(factory: () => Promise<I>, exportName?: K): I | T {
+// For default exports
+export function lazyImport<T extends ComponentType<unknown>>(
+  factory: () => Promise<{ default: T }>
+): React.LazyExoticComponent<T>;
+
+// For named exports
+export function lazyImport<T extends ComponentType<unknown>, K extends string>(
+  factory: () => Promise<Record<K, T>>,
+  exportName: K
+): Record<K, React.LazyExoticComponent<T>>;
+
+// Implementation
+export function lazyImport<T extends ComponentType<unknown>, K extends string>(
+  factory: () => Promise<Record<K, T> | { default: T }>,
+  exportName?: K
+): React.LazyExoticComponent<T> | Record<K, React.LazyExoticComponent<T>> {
   if (!exportName) {
     // Handle default export
-    return lazy(factory as unknown as () => Promise<{ default: T }>);
+    return lazy(factory as () => Promise<{ default: T }>);
   }
 
   // Handle named export
   const LazyComponent = lazy(async () => {
-    const module = await factory();
+    const module = await factory() as Record<K, T>;
     return { default: module[exportName] };
   });
 
-  return { [exportName]: LazyComponent } as I;
+  return { [exportName]: LazyComponent } as Record<K, React.LazyExoticComponent<T>>;
 }
 
 /**
