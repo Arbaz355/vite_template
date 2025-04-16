@@ -10,6 +10,9 @@ This directory contains comprehensive documentation for the Enterprise React Tem
 - **`/vite`** - Documentation for the Vite React Enterprise Template
   - [VITE-OVERVIEW.md](./vite/VITE-OVERVIEW.md) - Template overview and features
 
+- **`/testing`** - Testing documentation for both templates
+  - [TESTING-STRATEGY.md](./testing/TESTING-STRATEGY.md) - Comprehensive testing strategy and structure
+
 ## Creation Guides
 
 - [Next.js SSG Template Creation Guide](../NEXTJS-SSG-CREATION-GUIDE.md) - Step-by-step guide for creating the Next.js template

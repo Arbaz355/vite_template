@@ -10,11 +10,16 @@ A comprehensive collection of enterprise-grade React application templates and g
 ## Documentation Structure
 
 ### Guides
-- [**Vite Template Creation Guide**](./PROJECT-CREATION-GUIDE.md) - Step-by-step instructions for creating the Vite React Enterprise Template.
-- [**Next.js SSG Template Creation Guide**](./NEXTJS-SSG-CREATION-GUIDE.md) - Step-by-step instructions for creating the Next.js Enterprise Template with SSG.
+- [**Vite Template Creation Guide**](./docs/guides/VITE-CREATION-GUIDE.md) - Step-by-step instructions for creating the Vite React Enterprise Template.
+- [**Next.js SSG Template Creation Guide**](./docs/guides/NEXTJS-CREATION-GUIDE.md) - Step-by-step instructions for creating the Next.js Enterprise Template with SSG.
+
+### Technical Documentation
+- [**Testing Strategy**](./docs/testing/TESTING-STRATEGY.md) - Comprehensive testing approach for both templates.
+- [**Architecture Overview**](./docs/architecture-overview.md) - Overview of project architecture and design principles.
+- [**Deployment Strategies**](./docs/deployment-strategies.md) - Guide for different deployment approaches.
 
 ### Improvement Plan
-- [**Template Improvement Checklist**](./TODO-IMPROVEMENTS.md) - Comprehensive list of planned improvements for the templates.
+- [**Template Improvement Checklist**](./docs/improvements/TODO-IMPROVEMENTS.md) - Comprehensive list of planned improvements for the templates.
 
 ## Getting Started
 
