@@ -39,3 +39,18 @@ export const HTTP_METHODS = {
   DELETE: 'DELETE',
   PATCH: 'PATCH',
 } as const;
+
+export const API = {
+  BASE_URL: '/api',
+  ENDPOINTS: {
+    AUTH: {
+      LOGIN: '/auth/login',
+      LOGOUT: '/auth/logout',
+      REFRESH: '/auth/refresh',
+    },
+    USERS: {
+      LIST: '/users',
+      DETAIL: (id: string) => `/users/${id}`,
+    },
+  },
+};

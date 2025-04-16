@@ -43,3 +43,13 @@ export const LANGUAGES = {
   GERMAN: 'de',
   JAPANESE: 'ja',
 } as const;
+
+export const APP = {
+  NAME: 'React Enterprise App',
+  VERSION: '1.0.0',
+  THEMES: {
+    LIGHT: 'light',
+    DARK: 'dark',
+    SYSTEM: 'system',
+  },
+};
