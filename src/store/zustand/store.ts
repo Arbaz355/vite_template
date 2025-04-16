@@ -6,6 +6,7 @@
 
 import { create } from 'zustand';
 import { AppState, Notification } from '../types';
+import { ThemeMode } from '../../enums/ui';
 
 // Initial state (reusing the same structure from context.ts)
 const initialState: AppState = {
@@ -21,7 +22,7 @@ const initialState: AppState = {
     error: null,
   },
   ui: {
-    theme: 'system',
+    theme: ThemeMode.SYSTEM,
     language: 'en',
     notifications: [],
     modals: {},
@@ -41,7 +42,7 @@ interface StoreState extends AppState {
   clearUser: () => void;
 
   // UI actions
-  setTheme: (theme: AppState['ui']['theme']) => void;
+  setTheme: (theme: ThemeMode) => void;
   setLanguage: (language: string) => void;
   setSidebarState: (isOpen: boolean) => void;
   setSidebarActiveSection: (section: string | null) => void;

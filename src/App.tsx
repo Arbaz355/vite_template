@@ -2,13 +2,14 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import { useUI } from './store/zustand/hooks';
+import { ThemeMode } from './enums/ui';
 
 function App() {
   const [count, setCount] = useState(0);
   const { theme, setTheme } = useUI();
 
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(theme === ThemeMode.DARK ? ThemeMode.LIGHT : ThemeMode.DARK);
   };
 
   return (

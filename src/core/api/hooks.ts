@@ -9,7 +9,7 @@ import { useState, useCallback, useEffect } from 'react';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import api from './client';
 import { ApiRequestOptions, ApiResponse, PaginationParams } from '../../types/api';
-import { AsyncStatus } from '../../types/store';
+import { AsyncStatus } from '../../store/types';
 
 // Interface for entities with IDs
 interface WithId {

@@ -4,6 +4,8 @@
  * This file contains the core types for state management.
  */
 
+import { ThemeMode, NotificationType } from '../enums/ui';
+
 // Action Types
 export type ActionType = string;
 
@@ -34,7 +36,7 @@ export interface UserState {
 }
 
 export interface UIState {
-  theme: 'light' | 'dark' | 'system';
+  theme: ThemeMode;
   language: string;
   notifications: Notification[];
   modals: {
@@ -65,7 +67,7 @@ export interface EntitiesState {
 // Notification type for UI state
 export interface Notification {
   id: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: NotificationType;
   message: string;
   autoClose?: boolean;
   duration?: number;

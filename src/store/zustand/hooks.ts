@@ -5,6 +5,7 @@
  */
 
 import { useStore } from './store';
+import { ThemeMode } from '../../enums/ui';
 
 /**
  * Hook for user state and actions
@@ -23,7 +24,7 @@ export function useUser() {
 export function useUI() {
   return {
     ...useStore((state) => state.ui),
-    setTheme: useStore((state) => state.setTheme),
+    setTheme: useStore((state) => state.setTheme) as (theme: ThemeMode) => void,
     setLanguage: useStore((state) => state.setLanguage),
     setSidebarState: useStore((state) => state.setSidebarState),
     setSidebarActiveSection: useStore((state) => state.setSidebarActiveSection),
