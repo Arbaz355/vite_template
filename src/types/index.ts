@@ -4,12 +4,10 @@
  * This file exports all types and interfaces used throughout the application.
  */
 
-// Re-export all types
-export * from './auth';
-export * from './user';
-export * from './api';
-export * from './ui';
-export * from './store';
+// Import store types from the store module
+export * from '../store/types';
 
-// Include existing analytics types
-export * from './analytics.d';
+// Re-export API types
+export * from './api';
+
+// Analytics types are referenced via global declaration - nothing to export
