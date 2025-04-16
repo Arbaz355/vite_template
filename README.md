@@ -1,74 +1,56 @@
-# Vite React TypeScript Template with Tailwind CSS
+# React Enterprise Architecture
 
-A modern frontend template using Vite, React, TypeScript, and Tailwind CSS.
+A modern, scalable architecture for enterprise React applications using Vite, TypeScript, and Tailwind CSS.
 
-## Features
+## Architecture Overview
 
-- ⚡️ [Vite](https://vitejs.dev/) - Next Generation Frontend Tooling
-- ⚛️ [React](https://reactjs.org/) - A JavaScript library for building user interfaces
-- 🔒 [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
-- 🎨 [Tailwind CSS](https://tailwindcss.com/) - A utility-first CSS framework
-- 📦 [@tailwindcss/vite](https://github.com/tailwindlabs/tailwindcss) - Official Tailwind CSS Vite plugin
+This project follows a feature-based architecture with a focus on maintainability, scalability, and developer experience. The folder structure is organized to group related code together while keeping the codebase approachable.
 
-## Getting Started
+## Key Features
 
-### Prerequisites
+- **Feature-First Organization**: Business logic grouped by domain
+- **Separation of Concerns**: Clean separation between layers
+- **Atomic Design Components**: Reusable UI library
+- **Strong Typing**: Full TypeScript support
+- **Scalable State Management**: Flexible state management options
+- **Performance Optimized**: Built with Vite for fast development and production
 
-- Node.js (v18+)
-- npm or yarn
+## Documentation
 
-### Installation
+Comprehensive documentation is available in the [`docs`](./docs) directory:
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/your-repo-name.git
-cd your-repo-name
+- [Architecture Overview](./docs/architecture-overview.md)
+- [Core Module](./docs/core.md)
+- [Features Module](./docs/features.md)
+- [Shared Module](./docs/shared.md)
+- [Lib Module](./docs/lib.md)
+- [Store Module](./docs/store.md)
 
-# Install dependencies
-npm install
-```
-
-### Development
-
-```bash
-# Start the development server
-npm run dev
-```
-
-### Build
-
-```bash
-# Build for production
-npm run build
-```
-
-### Preview Production Build
-
-```bash
-# Preview the production build
-npm run preview
-```
+See the [documentation index](./docs/index.md) for a complete overview.
 
 ## Project Structure
 
 ```
-/
-├── node_modules/       # Dependencies
-├── public/             # Static assets
-├── src/                # Application source code
-│   ├── assets/         # Images, fonts, etc.
-│   ├── index.css       # Global CSS and Tailwind imports
-│   ├── App.tsx         # Main application component
-│   └── main.tsx        # Application entry point
-├── index.html          # HTML template
-├── package.json        # Project metadata
-├── tsconfig.json       # TypeScript configuration
-└── vite.config.ts      # Vite configuration
+src/
+├── core/               # Application-wide core functionality
+├── features/           # Feature-based modules
+├── shared/             # Shared functionality across features
+├── lib/                # Third-party library integrations
+└── store/              # Global state management
 ```
 
-## Customizing Tailwind CSS
+## Getting Started
 
-This template uses Tailwind CSS v4 with the `@tailwindcss/vite` plugin for optimal performance. No PostCSS configuration is required.
+```bash
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+
+# Build for production
+npm run build
+```
 
 ## License
 
