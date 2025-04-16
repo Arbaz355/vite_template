@@ -21,39 +21,60 @@ const requireEnv = (key: string): string => {
 };
 
 // Get an optional environment variable with a default value
-const getEnv = (key: string, defaultValue: string): string => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _getEnv = (key: string, defaultValue: string): string => {
   return import.meta.env[key] || defaultValue;
 };
 
 // Parse boolean environment variables
-const getBoolEnv = (key: string, defaultValue: boolean): boolean => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const _getBoolEnv = (key: string, defaultValue: boolean): boolean => {
   const value = import.meta.env[key];
   if (value === undefined) return defaultValue;
   return value === 'true';
 };
 
 // Environment configuration
-export const env = {
-  // Core environment
-  nodeEnv: getEnv('VITE_NODE_ENV', 'development') as NodeEnv,
-  isDevelopment: getEnv('VITE_NODE_ENV', 'development') === 'development',
-  isProduction: getEnv('VITE_NODE_ENV', 'development') === 'production',
-  isUAT: getEnv('VITE_NODE_ENV', 'development') === 'uat',
-  isLocal: getEnv('VITE_NODE_ENV', 'development') === 'local',
+interface EnvConfig {
+  // Application
+  nodeEnv: string;
+  isProduction: boolean;
+  isDevelopment: boolean;
+  isTest: boolean;
+  appVersion: string;
 
-  // API Configuration
-  apiUrl: getEnv('VITE_API_URL', '/api'),
+  // Features
+  enableAnalytics: boolean;
+  enableErrorTracking: boolean;
 
-  // Authentication Configuration
-  authDomain: getEnv('VITE_AUTH_DOMAIN', ''),
-  authClientId: getEnv('VITE_AUTH_CLIENT_ID', ''),
+  // Analytics & Monitoring Services
+  sentryDsn?: string;
+  logRocketId?: string;
+  gaMeasurementId?: string;
+  dynatraceEnvironmentId?: string;
+  dynatraceApplicationId?: string;
+}
 
-  // Feature Flags
-  enableAnalytics: getBoolEnv('VITE_ENABLE_ANALYTICS', false),
-  enableLogging: getBoolEnv('VITE_ENABLE_LOGGING', true),
+// Default environment configuration
+export const env: EnvConfig = {
+  // Application
+  nodeEnv: import.meta.env.MODE || 'development',
+  isProduction: import.meta.env.PROD,
+  isDevelopment: import.meta.env.DEV,
+  isTest: import.meta.env.MODE === 'test',
+  appVersion: import.meta.env.VITE_APP_VERSION || '0.1.0',
 
-  // Logging Configuration
-  logLevel: getEnv('VITE_LOG_LEVEL', 'info') as LogLevel,
+  // Features
+  enableAnalytics: import.meta.env.VITE_ENABLE_ANALYTICS === 'true' || import.meta.env.PROD,
+  enableErrorTracking:
+    import.meta.env.VITE_ENABLE_ERROR_TRACKING === 'true' || import.meta.env.PROD,
+
+  // Analytics & Monitoring Services
+  sentryDsn: import.meta.env.VITE_SENTRY_DSN,
+  logRocketId: import.meta.env.VITE_LOGROCKET_ID,
+  gaMeasurementId: import.meta.env.VITE_GA_MEASUREMENT_ID,
+  dynatraceEnvironmentId: import.meta.env.VITE_DYNATRACE_ENVIRONMENT_ID,
+  dynatraceApplicationId: import.meta.env.VITE_DYNATRACE_APPLICATION_ID,
 };
 
 // Expose the environment configuration for debugging in non-production environments
