@@ -5,9 +5,9 @@
  * Redirects unauthenticated users to the login page.
  */
 
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { isAuthenticated } from '../../auth/storage';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -31,32 +31,15 @@ const AuthGuard: React.FC<AuthGuardProps> = ({
   fallback = null,
 }) => {
   const location = useLocation();
-  const [isChecking, setIsChecking] = useState(true);
-  const [isAuth, setIsAuth] = useState(false);
-
-  useEffect(() => {
-    // Check authentication status
-    const checkAuth = async () => {
-      try {
-        const authenticated = isAuthenticated();
-        setIsAuth(authenticated);
-      } catch (error) {
-        setIsAuth(false);
-      } finally {
-        setIsChecking(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
+  const { isAuthenticated, isLoading } = useAuth();
 
   // Show fallback while checking
-  if (isChecking) {
+  if (isLoading) {
     return <>{fallback}</>;
   }
 
   // If not authenticated, redirect to login
-  if (!isAuth) {
+  if (!isAuthenticated) {
     return <Navigate to={redirectTo} state={{ from: location.pathname }} replace />;
   }
 

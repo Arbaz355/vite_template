@@ -7,11 +7,13 @@
 
 import React, { ReactNode, useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../../features/auth/hooks/useAuth';
+import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useUser } from '@/store';
+import { UserRole } from '@/enums/user';
 
 interface RoleGuardProps {
   children: ReactNode;
-  roles: string[];
+  roles: UserRole[];
   redirectTo?: string;
   fallback?: ReactNode;
 }
@@ -34,7 +36,8 @@ const RoleGuard: React.FC<RoleGuardProps> = ({
   fallback = null,
 }) => {
   const location = useLocation();
-  const { roles: userRoles, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const { roles: userRoles } = useUser();
   const [isChecking, setIsChecking] = useState(true);
   const [isAuthorized, setIsAuthorized] = useState(false);
 
@@ -51,7 +54,7 @@ const RoleGuard: React.FC<RoleGuardProps> = ({
       }
 
       // Check if user has any of the required roles
-      const hasRequiredRole = userRoles.some((userRole) => roles.includes(userRole));
+      const hasRequiredRole = userRoles.some((userRole) => roles.includes(userRole as UserRole));
 
       setIsAuthorized(hasRequiredRole);
       setIsChecking(false);
