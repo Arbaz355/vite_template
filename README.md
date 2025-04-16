@@ -77,6 +77,44 @@ npm run test
 yarn test
 ```
 
+## Using as a Template
+
+This project is designed to be used as a starting template for new React applications. Here are several ways to use it:
+
+### Quick Start with Degit
+
+For a quick start without git history:
+
+```bash
+# Install degit
+npm install -g degit
+
+# Create new project from this template
+degit yourusername/react-enterprise-app my-new-project
+
+# Install dependencies
+cd my-new-project
+npm install
+```
+
+### GitHub Template
+
+You can use GitHub's template feature:
+
+1. Click the "Use this template" button on the GitHub repository
+2. Name your new repository
+3. Clone your new repository and start developing
+
+### Other Template Options
+
+For more advanced template usage, including:
+- Creating a CRA template
+- Setting up a Vite template
+- Building a custom CLI tool
+- Customization guidelines
+
+See our detailed [Template Usage Guide](docs/template-usage.md).
+
 ## Project Structure
 
 ```
@@ -97,13 +135,13 @@ src/
 
 See the [Architecture Documentation](docs/architecture.md) for more details.
 
-## API Documentation
+## Documentation
 
-The application uses a centralized API client with hooks for data fetching. See the [API Documentation](docs/api.md) for details.
-
-## Component Documentation
-
-See the [Component Documentation](docs/components.md) for details on key UI components.
+- [Architecture Documentation](docs/architecture.md) - Overview of project architecture and design principles
+- [API Documentation](docs/api.md) - Details of the API client and data fetching hooks
+- [Component Documentation](docs/components.md) - Information on key UI components
+- [Template Usage Guide](docs/template-usage.md) - How to use this project as a template
+- [Migration Guide](docs/migration-guide.md) - Guidelines for upgrading the project in the future
 
 ## License
 
