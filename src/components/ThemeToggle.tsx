@@ -1,5 +1,6 @@
 import React from 'react';
 import { useUI } from '../store/zustand/hooks';
+import { ThemeMode } from '../enums/ui';
 
 // Before: With React.memo
 /*
@@ -37,7 +38,7 @@ const ThemeToggle = () => {
   const { theme, setTheme } = useUI();
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newTheme = event.target.value as 'light' | 'dark' | 'system';
+    const newTheme = event.target.value as ThemeMode;
     setTheme(newTheme);
   };
 
@@ -45,9 +46,9 @@ const ThemeToggle = () => {
     <div className="theme-toggle">
       <label htmlFor="theme-select">Theme:</label>
       <select id="theme-select" value={theme} onChange={handleThemeChange}>
-        <option value="light">Light</option>
-        <option value="dark">Dark</option>
-        <option value="system">System</option>
+        <option value={ThemeMode.LIGHT}>Light</option>
+        <option value={ThemeMode.DARK}>Dark</option>
+        <option value={ThemeMode.SYSTEM}>System</option>
       </select>
     </div>
   );
