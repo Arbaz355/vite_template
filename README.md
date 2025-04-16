@@ -1,85 +1,110 @@
-# React Enterprise Architecture
+# React Enterprise Application
 
-A modern, scalable architecture for enterprise React applications using Vite, TypeScript, and Tailwind CSS.
+A modern, secure, and scalable React application with enterprise-grade features.
 
-## Architecture Overview
+## Features
 
-This project follows a feature-based architecture with a focus on maintainability, scalability, and developer experience. The folder structure is organized to group related code together while keeping the codebase approachable.
+- 🔐 **Secure Authentication**: JWT token management with refresh capabilities
+- 🔄 **Efficient Data Fetching**: SWR for caching, revalidation, and stale-while-revalidate strategy
+- 🛡️ **Protected Routes**: Authentication and role-based access control
+- 📱 **Responsive Images**: Optimized loading with lazy loading, WebP support, and blur-up effect
+- 🔍 **SEO Optimization**: Metadata management with OpenGraph and Twitter card support
+- 📦 **Code Splitting**: On-demand loading with TypeScript-safe lazy imports
+- 🔒 **Secure Storage**: Unified API for localStorage, sessionStorage, and cookies with encryption
+- 🚀 **CI/CD Pipeline**: Comprehensive GitLab CI/CD workflow
 
-## Key Features
+## Getting Started
 
-- **Feature-First Organization**: Business logic grouped by domain
-- **Separation of Concerns**: Clean separation between layers
-- **Atomic Design Components**: Reusable UI library
-- **Strong Typing**: Full TypeScript support
-- **Scalable State Management**: Flexible state management options
-- **Performance Optimized**: Built with Vite for fast development and production
-- **Environment Configuration**: Support for multiple environments (dev, local, UAT, prod)
-- **Code Quality Tools**: ESLint, Prettier, Husky, SonarQube integration
+### Prerequisites
 
-## Documentation
+- Node.js 18+
+- npm or yarn
 
-Comprehensive documentation is available in the [`docs`](./docs) directory:
+### Installation
 
-- [Architecture Overview](./docs/architecture-overview.md)
-- [Core Module](./docs/core.md)
-- [Features Module](./docs/features.md)
-- [Shared Module](./docs/shared.md)
-- [Lib Module](./docs/lib.md)
-- [Store Module](./docs/store.md)
-- [Environment Configuration](./docs/environments.md)
+```bash
+# Clone the repository
+git clone <repository-url>
 
-See the [documentation index](./docs/index.md) for a complete overview.
+# Navigate to the project directory
+cd react-enterprise-app
+
+# Install dependencies
+npm install
+# or
+yarn install
+```
+
+### Development
+
+```bash
+# Start development server
+npm run dev
+# or
+yarn dev
+```
+
+### Building for Production
+
+```bash
+# Build the application
+npm run build
+# or
+yarn build
+
+# Preview the production build
+npm run preview
+# or
+yarn preview
+```
+
+### Testing
+
+```bash
+# Run unit tests
+npm run test:unit
+# or
+yarn test:unit
+
+# Run integration tests
+npm run test:integration
+# or
+yarn test:integration
+
+# Run all tests with coverage
+npm run test
+# or
+yarn test
+```
 
 ## Project Structure
 
 ```
 src/
-├── core/               # Application-wide core functionality
-├── features/           # Feature-based modules
-├── shared/             # Shared functionality across features
-├── lib/                # Third-party library integrations
-└── store/              # Global state management
+├── core/                  # Core utilities and components
+│   ├── api/               # API client and data fetching hooks
+│   ├── auth/              # Authentication utilities
+│   ├── components/        # Shared UI components
+│   ├── router/            # Routing and guards
+│   ├── storage/           # Storage utilities
+│   └── utils/             # Helper functions
+├── features/              # Feature modules
+│   ├── auth/              # Authentication feature
+│   ├── dashboard/         # Dashboard feature
+│   └── ...
+└── types/                 # Global TypeScript types
 ```
 
-## Getting Started
+See the [Architecture Documentation](docs/architecture.md) for more details.
 
-```bash
-# Install dependencies
-npm install
+## API Documentation
 
-# Start the development server
-npm run dev
+The application uses a centralized API client with hooks for data fetching. See the [API Documentation](docs/api.md) for details.
 
-# Start with specific environment
-npm run dev:local   # Local environment
-npm run dev:uat     # UAT environment
+## Component Documentation
 
-# Build for production
-npm run build
-
-# Run linting
-npm run lint
-
-# Format code
-npm run format
-```
-
-## Available Scripts
-
-- `npm run dev`: Start development server
-- `npm run dev:local`: Start with local environment
-- `npm run dev:uat`: Start with UAT environment
-- `npm run build`: Build for production
-- `npm run build:uat`: Build for UAT environment
-- `npm run build:prod`: Build for production
-- `npm run preview`: Preview production build
-- `npm run lint`: Run ESLint
-- `npm run lint:fix`: Run ESLint with auto-fix
-- `npm run format`: Format code with Prettier
-- `npm run format:check`: Check code formatting
-- `npm run sonar`: Run SonarQube analysis
+See the [Component Documentation](docs/components.md) for details on key UI components.
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
