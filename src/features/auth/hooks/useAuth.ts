@@ -2,24 +2,22 @@
  * Main authentication hook that provides authentication state and methods
  */
 import { useCallback } from "react";
-import { useDispatch, useSelector } from '../../../store/hooks';
-import { logout } from '../../../store/slices/user';
+import { useUser } from '../../../store';
 
 export function useAuth() {
-  const dispatch = useDispatch();
-  const authState = useSelector((state) => state.user);
+  const { id, email, displayName, isAuthenticated, loading, error, clearUser } = useUser();
 
   const handleLogout = useCallback(() => {
-    dispatch(logout());
-  }, [dispatch]);
+    clearUser();
+  }, [clearUser]);
 
   return {
-    id: authState.id,
-    email: authState.email,
-    displayName: authState.displayName,
-    isAuthenticated: authState.isAuthenticated,
-    isLoading: authState.loading,
-    error: authState.error,
+    id,
+    email,
+    displayName,
+    isAuthenticated,
+    isLoading: loading,
+    error,
     logout: handleLogout,
   };
 }
