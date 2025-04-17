@@ -1,6 +1,46 @@
-# Documentation Directory
+# Documentation Overview
 
-This directory contains comprehensive documentation for the Enterprise React Template Ecosystem.
+This directory contains comprehensive documentation for the Enterprise React Template Ecosystem. The documentation is organized into several sections for easy navigation.
+
+## Directory Structure
+
+### Core Documentation
+- `architecture-overview.md` - High-level overview of the project architecture
+- `migration-guide.md` - Guidelines for upgrading the project
+- `deployment-strategies.md` - Various deployment approaches
+
+### Template-Specific Documentation
+- `vite/` - Documentation specific to the Vite React Enterprise Template
+- `nextjs/` - Documentation specific to the Next.js Enterprise Template
+
+### Creation Guides
+- `guides/` - Step-by-step guides for creating templates from scratch
+
+### Features Documentation
+- `features/` - Documentation for feature modules
+- `features.md` - Overview of feature organization
+
+### Implementation Details
+- `implementation/` - Detailed implementation documentation
+- `components.md` - Shared component documentation
+- `api.md` - API integration documentation
+- `store.md` - State management documentation
+- `forms.md` - Form handling documentation
+
+### Environment & Configuration
+- `environments.md` - Environment configuration documentation
+- `deployment.md` - Deployment configurations
+
+### Testing
+- `testing/` - Testing strategy and practices
+- `testing.md` - Overview of testing approach
+
+### Improvements
+- `improvements/` - Future improvement plans and TODOs
+
+## Navigation
+
+For the main entry point to all documentation, please refer to the project's [main README.md](../README.md) file.
 
 ## Directory Structure
 
