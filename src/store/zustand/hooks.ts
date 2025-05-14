@@ -5,7 +5,7 @@
  */
 
 import { useStore } from './store';
-import { ThemeMode } from '../../enums/ui';
+import { ThemeMode } from '../../constants/ui';
 
 /**
  * Hook for user state and actions

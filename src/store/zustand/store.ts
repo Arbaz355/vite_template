@@ -6,7 +6,7 @@
 
 import { create } from 'zustand';
 import { AppState, Notification } from '../types';
-import { ThemeMode } from '../../enums/ui';
+import { ThemeMode } from '../../constants/ui';
 
 // Initial state (reusing the same structure from context.ts)
 const initialState: AppState = {

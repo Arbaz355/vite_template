@@ -4,7 +4,7 @@
  * This file contains the core types for state management.
  */
 
-import { ThemeMode, NotificationType } from '../enums/ui';
+import { ThemeMode, NotificationType } from '../constants/ui';
 
 // Action Types
 export type ActionType = string;

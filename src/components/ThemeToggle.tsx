@@ -1,6 +1,6 @@
 import React from 'react';
 import { useUI } from '../store/zustand/hooks';
-import { ThemeMode } from '../enums/ui';
+import { ThemeMode } from '../constants/ui';
 
 // Before: With React.memo
 /*

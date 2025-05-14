@@ -2,7 +2,7 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import { useUI } from './store/zustand/hooks';
-import { ThemeMode } from './enums/ui';
+import { ThemeMode } from './constants/ui';
 
 function App() {
   const [count, setCount] = useState(0);

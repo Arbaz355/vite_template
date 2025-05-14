@@ -9,7 +9,7 @@ import React, { ReactNode, useState, useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useUser } from '@/store';
-import { UserRole } from '@/enums/user';
+import { UserRole } from '@/constants/user';
 
 interface RoleGuardProps {
   children: ReactNode;
