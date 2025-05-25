@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { FormInput } from '@/shared/components/forms';
 import { LogInIcon } from 'lucide-react';
+import { logger } from '@/core/logging';
 
 // Zod schema for form validation
 const loginSchema = z.object({
@@ -18,7 +19,10 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
     const navigate = useNavigate();
-    
+
+    // Debug log when component mounts
+    logger.debug('Login component mounted', { timestamp: new Date() }, 'Login');
+
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -27,9 +31,39 @@ const Login = () => {
         }
     });
 
-    const onSubmit = (data: LoginValues) => {
-        console.log('Form submitted:', data);
-        navigate(ROUTES.DASHBOARD);
+    const onSubmit = async (data: LoginValues) => {
+        try {
+            // Info log for tracking user actions
+            logger.info('Login attempt', { email: data.email }, 'Login');
+
+            // Example of simulated API call that might fail
+            if (data.email === 'error@example.com') {
+                throw new Error('Authentication failed');
+            }
+
+            // Info log for successful login
+            logger.info('Login successful', { email: data.email }, 'Login');
+            navigate(ROUTES.DASHBOARD);
+        } catch (error) {
+            // Error log for failed login attempts
+            logger.error(
+                'Login failed',
+                {
+                    error: error instanceof Error ? error.message : 'Unknown error',
+                    email: data.email
+                },
+                'Login'
+            );
+
+            // If the error is critical, you might want to use fatal level
+            if (error instanceof Error && error.message.includes('network')) {
+                logger.fatal(
+                    'Critical authentication service failure',
+                    { error: error.message },
+                    'Login'
+                );
+            }
+        }
     };
 
     return (
@@ -37,7 +71,7 @@ const Login = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm space-y-4 p-4">
                     <h1 className="text-2xl font-bold text-center mb-6">Sign In</h1>
-                    
+
                     <FormInput
                         control={form.control}
                         name="email"
@@ -59,7 +93,7 @@ const Login = () => {
                         isEyeIconRequired
                     />
 
-                    <Button 
+                    <Button
                         type="submit"
                         className="w-full"
                         isLoading={form.formState.isSubmitting}

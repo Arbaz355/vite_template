@@ -69,15 +69,15 @@ This document outlines the comprehensive testing strategy for both the Vite and 
 
 ## Testing Tools & Technologies
 
-| Category | Vite Template | Next.js Template |
-|----------|---------------|-----------------|
+| Category           | Vite Template                 | Next.js Template            |
+| ------------------ | ----------------------------- | --------------------------- |
 | Unit & Integration | Vitest, React Testing Library | Jest, React Testing Library |
-| Component Testing | Vitest, React Testing Library | Jest, React Testing Library |
-| API Testing | MSW, Vitest | MSW, Jest |
-| E2E Testing | Playwright | Playwright |
-| Visual Regression | Storybook + Chromatic | Storybook + Chromatic |
-| Coverage | Vitest Coverage | Jest Coverage |
-| Mocking | MSW, Vitest Mocks | MSW, Jest Mocks |
+| Component Testing  | Vitest, React Testing Library | Jest, React Testing Library |
+| API Testing        | MSW, Vitest                   | MSW, Jest                   |
+| E2E Testing        | Playwright                    | Playwright                  |
+| Visual Regression  | Storybook + Chromatic         | Storybook + Chromatic       |
+| Coverage           | Vitest Coverage               | Jest Coverage               |
+| Mocking            | MSW, Vitest Mocks             | MSW, Jest Mocks             |
 
 ## Test Types
 
@@ -93,7 +93,7 @@ This document outlines the comprehensive testing strategy for both the Vite and 
 - **Target**: Individual UI components
 - **Approach**: React Testing Library with user-centric testing
 - **Tools**: Vitest/Jest + React Testing Library
-- **Co-location**: Next to component files or in __tests__ directories
+- **Co-location**: Next to component files or in **tests** directories
 
 ### 3. Integration Tests
 
@@ -143,38 +143,62 @@ Both templates include CI configuration for:
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run unit tests only
-npm run test:unit
+pnpm test:unit
 
 # Run integration tests only
-npm run test:integration
+pnpm test:integration
 
 # Run e2e tests
-npm run test:e2e
+pnpm test:e2e
 
 # Generate coverage report
-npm run test:coverage
+pnpm test:coverage
+
+# Run tests in UI mode
+pnpm test:ui
+
+# Run tests with debug mode
+pnpm test:debug
+
+# Run a specific test case by pattern
+pnpm playwright test --grep "renders with text content"
+
+# Run tests in a specific file
+pnpm playwright test button.test.ts
 ```
 
 ### Running Tests in Next.js Template
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run unit tests only
-npm run test:unit
+pnpm test:unit
 
 # Run integration tests only
-npm run test:integration
+pnpm test:integration
 
 # Run e2e tests
-npm run test:e2e
+pnpm test:e2e
 
 # Generate coverage report
-npm run test:coverage
+pnpm test:coverage
+
+# Run tests in UI mode
+pnpm test:ui
+
+# Run tests with debug mode
+pnpm test:debug
+
+# Run a specific test case by pattern
+pnpm playwright test --grep "renders with text content"
+
+# Run tests in a specific file
+pnpm playwright test button.test.ts
 ```
 
 ## Test Documentation
@@ -184,4 +208,4 @@ Each test file should include:
 1. Clear description of what is being tested
 2. Setup and mock requirements
 3. Expected outcomes
-4. Coverage of edge cases and error states 
+4. Coverage of edge cases and error states
