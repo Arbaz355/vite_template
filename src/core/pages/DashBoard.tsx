@@ -10,8 +10,7 @@ const Dashboard = () => {
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold">
                     {/* Welcome, {user?.displayName || 'User'} */}
-                </h1>
-                <Button
+                </h1>                <Button
                     variant="outline"
                     onClick={logout}
                     leftIcon={<LogOutIcon className="h-4 w-4" />}

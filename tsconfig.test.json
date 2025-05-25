@@ -12,6 +12,6 @@
     "strict": true,
     "jsx": "react-jsx"
   },
-  "include": ["tests", "src/setupTests.ts"],
+  "include": ["tests", "src/setupTests.ts", "src/components"],
   "exclude": ["node_modules"]
 }
